@@ -1,0 +1,82 @@
+/ Initial Notes /
+
+inputs 
+    - R - total number of rows before filter/condition applied
+    - D - distribution of data with support S
+    - C - sampling condition (i.e., a restriction on support set S)
+
+intermediate compute
+    - R' - number of rows to return (i.e., number of draws to make from conditional distribution)
+
+output
+    - R' rows sampled from S satisfying condition C reflecting distribution D
+
+--
+
+def: integral(function, support) is the integral of "function" over set "support"
+
+def: S' is the restricted support set [ i.e., if S is (0, 100) and the condition is x > 10, then S' is (10, 100) ]
+
+let's say the density function for distribution D is f.
+
+then: integral(f, S) = 1, by definition of density function.
+
+how many rows should we return to the user?
+
+well, what is the weight ("volume", "area") of the restricted support set S'?
+
+the weight of S' is exactly: integral(f, S')
+
+so, the "target" number of rows to return to the user is: R * integral(f, S')
+
+for example:
+    - R - 100 rows in table before filter / condition applied
+    - D - uniform distribution, from 0 to 100 [ so S = (0,100) ]
+    - C - "where x > 10" [ so the restricted support S' is (10,100) ]
+
+    the density f is: f(x) = 1/100 for x in (0,100)
+
+    how many rows to return to the user?
+
+    we compute the weight of the restricted support set:
+        integral(f, S') == integral(f, (10,100)) = .9
+
+    so, out of an original total of 100 rows,
+    we will return .9 * 100 = 90 rows "on average"
+
+    so we draw 90 samples from the truncated uniform distribution with support set (10,100)
+    and this set of 90 samples is exactly the data returned to the user.
+
+even more formally:
+
+    we are given a distribution, support set, and restricting condition.
+    our simulation method is to sample directly from the truncated distribution over the restricted support set.
+    
+    one open question is: how to compute the number of times to draw from the truncated distribution?
+
+    we can directly compute/approximate the weight of the restricted support set, which is great.
+    so definitely, whatever the relative weight of the restricted support set is, 
+        the number of points we return should be: weightOfRestrictedSupportSet * totalNRowsBeforeFilter
+
+    however, this is not random variable as we've described it, but in reality this is definitely a random variable.
+
+    that is, with our U(0,100) and x > 10 example:
+        we don't want to return exactly 90 rows every time this query is performed.
+
+        in reality, we'll get something like, (92, 87, 88, 91, 95, ...)
+            -> symmetric distribution around 90.
+
+        one question is: what is the distribution of the number of sample points which lie in the support set?
+
+        i.e., draw 100 samples from U(0,100) -> what is the distribution of X, the number of samples which are greater than 10?
+
+    we don't necessarily need to be this precise with our simulations for a POC.
+
+    we can just apply some "fuzz" to the target return number.
+
+    but it's an open question and it'd be nice for completion and total fidelity to get the correct or approximately correct distribution
+    for the number of data points to return per query.
+
+
+
+
