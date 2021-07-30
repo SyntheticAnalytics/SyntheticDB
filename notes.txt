@@ -66,7 +66,7 @@ even more formally:
         in reality, we'll get something like, (92, 87, 88, 91, 95, ...)
             -> symmetric distribution around 90.
 
-        one question is: what is the distribution of the number of sample points which lie in the support set?
+        one question is: what is the distribution of the number of sample points which lie in the restricted support set?
 
         i.e., draw 100 samples from U(0,100) -> what is the distribution of X, the number of samples which are greater than 10?
 
