@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List, TypeVar, Callable, Optional, Union, Dict
-import pandas as pd
+import sqlparse
 
 
 @dataclass
@@ -106,12 +106,30 @@ class Query:
     table_name: str
     where_clauses: List[WhereClause]
 
+def parse_sql_to_query(raw: str) -> Query:
+    parsed = sqlparse.parse(raw)[0]
+    important_tokens = [token for token in parsed if token.is_whitespace is False]
+    from_position = -1
+    for i, token in enumerate(important_tokens):
+        if token.normalized == "FROM":
+            from_position = i
+    table_name: str = important_tokens[from_position + 1].value
+    table_name = table_name.strip("`")
+    return Query(
+        table_name=table_name,
+        where_clauses=[]
+    )
 
 @dataclass
 class DataBase:
     tables: Dict[str, Table]
 
-    def select(self, query: Query):
+    def select(self, query_text: str):
+        query = parse_sql_to_query(query_text)
+        result = self.select_from_query(query)
+        return result
+
+    def select_from_query(self, query: Query) -> Dict[str, List[float]]:
         table_name = query.table_name
         where_clauses = query.where_clauses
         table = self.tables.get(table_name)

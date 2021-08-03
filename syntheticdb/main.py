@@ -18,17 +18,7 @@ if __name__ == "__main__":
     )
     db = DataBase(tables={"user": user_table})
 
-    rows = db.select(
-        Query(
-            table_name="user",
-            where_clauses=[
-                WhereClause(column_name="age", condition=FloatRangeCondition(None, 30)),
-                WhereClause(
-                    column_name="height", condition=FloatRangeCondition(None, 5)
-                ),
-            ],
-        )
-    )
+    rows = db.select("select * from `user`")
     df = pd.DataFrame.from_dict(rows)
     plot = pd.DataFrame(df)["height"].hist(bins=50)
     fig = plot.get_figure()
