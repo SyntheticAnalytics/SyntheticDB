@@ -8,3 +8,6 @@ bump:
 	poetry version patch
 
 release: bump build publish
+
+test:
+	pytest

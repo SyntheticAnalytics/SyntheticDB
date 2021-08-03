@@ -3,3 +3,4 @@ dist/
 *.pdf
 venv/
 *.png
+__pycache__
