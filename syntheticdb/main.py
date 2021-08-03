@@ -142,14 +142,14 @@ if __name__ == "__main__":
             "age": uniform_float_column(0, 100),
             "height": standard_normal_float_column(5, 1)
         },
-        row_count=10000
+        row_count=1000
     )
     rows = select(table, where_clauses=[
-        WhereClause(column_name="age", condition=FloatRangeCondition(None, 50)),
+        WhereClause(column_name="age", condition=FloatRangeCondition(None, 30)),
         WhereClause(column_name="height", condition=FloatRangeCondition(None, 5))
     ])
     df = pd.DataFrame.from_dict(rows)
     plot = pd.DataFrame(df)["height"].hist(bins=50)
     fig = plot.get_figure()
-    fig.savefig("test.png")
+    fig.savefig("test2.png")
     print(df)
