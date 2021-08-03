@@ -28,6 +28,13 @@ jobs:
       - name: install-poetry
         run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 
+
+      - name: Configure creds
+        env: # Or as an environment variable
+          PYPI_USER: ${{ secrets.PYPI_USER }}
+          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: source $HOME/.poetry/env && poetry config http-basic.pypi $PYPI_USER $PYPI_PASSWORD
+
       # Runs a single command using the runners shell
       - name: Release new version of package
         run: source $HOME/.poetry/env && make release
