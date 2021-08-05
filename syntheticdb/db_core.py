@@ -1,13 +1,7 @@
 from dataclasses import dataclass
-from typing import List, TypeVar, Callable, Optional, Union, Dict
-import sqlparse
+from typing import List, TypeVar, Callable, Union, Dict
 
-
-@dataclass
-class FloatRangeCondition:
-    min: Optional[float]
-    max: Optional[float]
-
+from syntheticdb.query_parser import Query, FloatRangeCondition, parse_sql_to_query
 
 T = TypeVar("T")
 
@@ -77,18 +71,6 @@ class FloatColumn:
         return self.cdf(1e10)
 
 
-@dataclass
-class WhereClause:
-    column_name: str
-    condition: Union[FloatRangeCondition]
-
-
-@dataclass
-class Query:
-    table_name: str
-    where_clauses: List[WhereClause]
-
-
 @dataclass(frozen=True)
 class Table:
     columns: Dict[str, Union[FloatColumn]]
@@ -102,25 +84,6 @@ class Table:
 
 
 @dataclass
-class Query:
-    table_name: str
-    where_clauses: List[WhereClause]
-
-def parse_sql_to_query(raw: str) -> Query:
-    parsed = sqlparse.parse(raw)[0]
-    important_tokens = [token for token in parsed if token.is_whitespace is False]
-    from_position = -1
-    for i, token in enumerate(important_tokens):
-        if token.normalized == "FROM":
-            from_position = i
-    table_name: str = important_tokens[from_position + 1].value
-    table_name = table_name.strip("`")
-    return Query(
-        table_name=table_name,
-        where_clauses=[]
-    )
-
-@dataclass
 class DataBase:
     tables: Dict[str, Table]
 
@@ -132,7 +95,7 @@ class DataBase:
     def select_from_query(self, query: Query) -> Dict[str, List[float]]:
         table_name = query.table_name
         where_clauses = query.where_clauses
-        table = self.tables.get(table_name)
+        table = self.tables.get(table_name.strip("`"))
         view_table = Table(table.columns, table.row_count)
         for clause in where_clauses:
             column = view_table.columns.get(clause.column_name, None)
@@ -145,7 +108,12 @@ class DataBase:
             if type(clause.condition) == FloatRangeCondition:
                 view_table.columns[clause.column_name] = column.where(clause.condition)
         new_row_count = view_table.get_row_num()
+        columns_to_return = {
+            name: col
+            for name, col in view_table.columns.items()
+            if name in query.columns
+        }
         return {
             name: [col.sample() for _ in range(new_row_count)]
-            for name, col in view_table.columns.items()
+            for name, col in columns_to_return.items()
         }

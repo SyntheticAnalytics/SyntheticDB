@@ -9,5 +9,8 @@ bump:
 
 release: bump build publish
 
+format:
+	black syntheticdb/ tests/
+
 test:
 	pytest
