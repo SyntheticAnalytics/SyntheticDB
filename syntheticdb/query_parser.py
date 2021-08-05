@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional, Union, Literal, Tuple, Callable
+from typing import List, Optional, Union, Tuple, Callable
 import sqlparse
 from sqlparse.sql import IdentifierList, Token, Identifier, Where, Comparison
 from functools import partial
@@ -17,13 +17,10 @@ class WhereClause:
     condition: Union[FloatRangeCondition]
 
 
-wildcard = Literal["r", "rb", "w", "wb"]
-
-
 @dataclass
 class Query:
     table_name: str
-    columns: Union[List[str], wildcard]
+    columns: Union[List[str], str]
     where_clauses: List[WhereClause]
 
 
@@ -49,7 +46,7 @@ class Query:
 
 
 def query(
-    columns: Union[List[str], wildcard],
+    columns: Union[List[str], str],
     table_name: str,
     where_clauses: List[WhereClause],
 ) -> Query:
