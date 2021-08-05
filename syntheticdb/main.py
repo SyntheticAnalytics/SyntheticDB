@@ -13,7 +13,7 @@ if __name__ == "__main__":
     )
     db = DataBase(tables={"user": user_table})
 
-    rows = db.select("select age from `user` where height > 2 and age < 20")
+    rows = db.select("select * from `user` where height > 2 and age < 20")
     df = pd.DataFrame.from_dict(rows)
     plot = pd.DataFrame(df)["age"].hist(bins=50)
     fig = plot.get_figure()

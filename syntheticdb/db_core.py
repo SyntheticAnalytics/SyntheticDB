@@ -108,12 +108,14 @@ class DataBase:
             if type(clause.condition) == FloatRangeCondition:
                 view_table.columns[clause.column_name] = column.where(clause.condition)
         new_row_count = view_table.get_row_num()
-        columns_to_return = {
-            name: col
-            for name, col in view_table.columns.items()
-            if name in query.columns
-        }
-        return {
-            name: [col.sample() for _ in range(new_row_count)]
-            for name, col in columns_to_return.items()
-        }
+        columns_to_return = {}
+        if query.columns == "*":
+            for name, col in view_table.columns.items():
+                columns_to_return[name] = [col.sample() for _ in range(new_row_count)]
+        else:
+            for name, col in view_table.columns.items():
+                if name in query.columns:
+                    columns_to_return[name] = [
+                        col.sample() for _ in range(new_row_count)
+                    ]
+        return columns_to_return
