@@ -13,8 +13,15 @@ if __name__ == "__main__":
     )
     db = DataBase(tables={"user": user_table})
 
-    df = db.select("select * from `user` where height > 2 and age < 20")
+    df = db.select("select * from `user`")
     plot = df["age"].hist(bins=50)
     fig = plot.get_figure()
     fig.savefig("test2.png")
     print(df)
+
+    df_2 = db.select("select height from `user`")
+    print(df_2)
+
+    df_3 = db.select("select height from `user` where age < 5 and height < 10")
+    df_3 = db.select("select height from `user` where age < 5 and height < 10")
+    print(df_3)

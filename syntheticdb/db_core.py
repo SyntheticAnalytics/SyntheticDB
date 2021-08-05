@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List, TypeVar, Callable, Union, Dict
-
+from copy import deepcopy
 import pandas as pd
 
 from syntheticdb.query_parser import Query, FloatRangeCondition, parse_sql_to_query
@@ -80,7 +80,7 @@ class Table:
 
     def get_row_num(self) -> int:
         probability = 1
-        for column in self.columns.values():
+        for name, column in self.columns.items():
             probability = probability * column.prob()
         return int(self.row_count * probability)
 
@@ -97,8 +97,9 @@ class DataBase:
     def select_from_query(self, query: Query) -> Dict[str, List[float]]:
         table_name = query.table_name
         where_clauses = query.where_clauses
-        table = self.tables.get(table_name.strip("`"))
-        view_table = Table(table.columns, table.row_count)
+        stripped_table_name = table_name.strip("`")
+        table = self.tables.get(stripped_table_name)
+        view_table = deepcopy(table)
         for clause in where_clauses:
             column = view_table.columns.get(clause.column_name, None)
             if column is None:
