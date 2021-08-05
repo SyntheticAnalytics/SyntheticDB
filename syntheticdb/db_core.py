@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List, TypeVar, Callable, Union, Dict
 
+import pandas as pd
+
 from syntheticdb.query_parser import Query, FloatRangeCondition, parse_sql_to_query
 
 T = TypeVar("T")
@@ -118,4 +120,4 @@ class DataBase:
                     columns_to_return[name] = [
                         col.sample() for _ in range(new_row_count)
                     ]
-        return columns_to_return
+        return pd.DataFrame.from_dict(columns_to_return)
