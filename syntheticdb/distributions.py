@@ -1,27 +1,49 @@
-import random
-from functools import partial
-
+from scipy.stats import uniform
 from scipy.stats import norm
-
+from scipy.stats import loguniform
+from scipy.stats import lognorm
+from scipy.stats import gamma
+from scipy.stats import expon
+from scipy.stats import beta
+from scipy.stats import weibull_min
+## 
 from syntheticdb.db_core import Distribution
 
-
-def uniform(min: float, max: float) -> Distribution:
-    return Distribution(
-        sample=lambda: (random.random() * max - min) + min,
-        cdf=partial(uniform_cdf, min, max),
-    )
-
-
-def standard_normal(mean: float, std_dev: float) -> Distribution:
-    dist = norm(loc=mean, scale=std_dev)
+## helper fn
+def makeDistribution(dist) -> Distribution:
     return Distribution(sample=dist.rvs, cdf=dist.cdf)
 
+## distributions ##
 
-def uniform_cdf(min_val: float, max_val: float, point: float) -> float:
-    if point < min_val:
-        return 0
-    if min_val < point < max_val:
-        return (point - min_val) / (max_val - min_val)
-    if point > max_val:
-        return 1
+def Uniform(loc: float, scale: float) -> Distribution:
+    dist = uniform(loc=loc, scale=scale)
+    return makeDistribution(dist)
+
+def LogUniform(a: float, b: float) -> Distribution:
+    dist = loguniform(a=a,b=b)
+    return makeDistribution(dist)
+
+def Normal(loc: float, scale: float) -> Distribution:
+    dist = norm(loc=loc, scale=scale)
+    return makeDistribution(dist)
+
+def LogNormal(s: float, loc: float, scale: float) -> Distribution:
+    dist = lognorm(s=s, loc=loc, scale=scale)
+    return makeDistribution(dist)
+
+def Gamma(a: float, loc: float, scale: float) -> Distribution:
+    dist = gamma(a=a, loc=loc, scale=scale)
+    return makeDistribution(dist)
+
+def Exponential(loc: float, scale: float) -> Distribution:
+    dist = expon(loc=loc, scale=scale)
+    return makeDistribution(dist)
+
+def Beta(a: float, b: float) -> Distribution:
+    dist = beta(a=a, b=b)
+    return makeDistribution(dist)
+
+def Weibull(c: float, loc: float, scale: float) -> Distribution:
+    dist = weibull_min(c=c, loc=loc, scale=scale)
+    return makeDistribution(dist)
+
