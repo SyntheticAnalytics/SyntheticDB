@@ -8,8 +8,8 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = ">=3.7.1,<4.0"
 scipy = ">=1"
-pandas = "^1.2.1"
-matplotlib = "^3.4.2"
+pandas = ">=1"
+matplotlib = ">=3"
 sqlparse = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
