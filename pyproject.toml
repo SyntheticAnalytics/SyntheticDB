@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "syntheticdb"
-version = "0.0.12"
+version = "0.0.13"
 description = ""
 authors = []
 license = "MIT"
@@ -10,6 +10,7 @@ python = ">=3.7.1,<4.0"
 scipy = ">=1"
 pandas = "^1.2.1"
 matplotlib = "^3.4.2"
+sqlparse = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
