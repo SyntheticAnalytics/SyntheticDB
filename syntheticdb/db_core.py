@@ -121,11 +121,11 @@ class DataBase:
         columns_to_return = {}
         if query.columns == "*":
             for name, col in view_table.columns.items():
-                columns_to_return[name] = [col.sample() for _ in range(new_row_count)]
+                columns_to_return[name] = [col.distribution.sample() for _ in range(new_row_count)]
         else:
             for name, col in view_table.columns.items():
                 if name in query.columns:
                     columns_to_return[name] = [
-                        col.sample() for _ in range(new_row_count)
+                        col.distribution.sample() for _ in range(new_row_count)
                     ]
         return pd.DataFrame.from_dict(columns_to_return)
