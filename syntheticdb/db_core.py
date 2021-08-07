@@ -14,63 +14,70 @@ def sample_until(callable: Callable[[], T], condition: Callable[[T], bool]) -> T
         if condition(out_val):
             return out_val
 
+@dataclass
+class Distribution:
+    sample: Callable[[], float]
+    cdf: Callable[[float], float]
 
 @dataclass(frozen=True)
 class FloatColumn:
-    sample: Callable[[], float]
-    cdf: Callable[[float], float]
+    distribution: Distribution
 
     def where(self, condition: FloatRangeCondition):
         if condition.min and condition.max:
 
             def new_cdf(point):
-                cd_at_min = self.cdf(condition.min)
-                cd_at_max = self.cdf(condition.max)
+                cd_at_min = self.distribution.cdf(condition.min)
+                cd_at_max = self.distribution.cdf(condition.max)
                 if point < condition.min:
                     return 0
                 if condition.min < point < condition.max:
-                    return self.cdf(point) - cd_at_min
+                    return self.distribution.cdf(point) - cd_at_min
                 if point > condition.max:
                     return cd_at_max
 
             return FloatColumn(
-                sample=lambda: sample_until(
-                    self.sample, lambda x: condition.max > x > condition.min
-                ),
-                cdf=new_cdf,
+                Distribution(
+                    sample=lambda: sample_until(self.distribution.sample, lambda x: condition.max > x > condition.min),
+                    cdf=new_cdf,
+                )
             )
         if condition.min:
 
             def new_cdf(point):
-                cd_at_min = self.cdf(condition.min)
+                cd_at_min = self.distribution.cdf(condition.min)
                 if point < condition.min:
                     return 0
                 if condition.min < point:
-                    return self.cdf(point) - cd_at_min
+                    return self.distribution.cdf(point) - cd_at_min
 
             return FloatColumn(
-                sample=lambda: sample_until(self.sample, lambda x: x > condition.min),
-                cdf=new_cdf,
+                Distribution(
+                    sample=lambda: sample_until(self.distribution.sample, lambda x: x > condition.min),
+                    cdf=new_cdf,
+                )
             )
         if condition.max:
 
             def new_cdf(point):
-                cd_at_max = self.cdf(condition.max)
+                cd_at_max = self.distribution.cdf(condition.max)
                 if point < condition.max:
-                    return self.cdf(point)
+                    return self.distribution.cdf(point)
                 if condition.max < point:
                     return cd_at_max
 
             return FloatColumn(
-                sample=lambda: sample_until(self.sample, lambda x: x < condition.max),
-                cdf=new_cdf,
+                Distribution(
+                    sample=lambda: sample_until(self.distribution.sample, lambda x: x < condition.max),
+                    cdf=new_cdf,
+                )
             )
         raise Exception(
             "Invalid condition, must have at least one range value populated"
         )
 
     def prob(self):
-        return self.cdf(1e10)
+        return self.distribution.cdf(1e10)
 
 
 @dataclass(frozen=True)

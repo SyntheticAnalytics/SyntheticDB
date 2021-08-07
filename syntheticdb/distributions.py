@@ -3,19 +3,19 @@ from functools import partial
 
 from scipy.stats import norm
 
-from syntheticdb.db_core import FloatColumn
+from syntheticdb.db_core import Distribution
 
 
-def uniform_float_column(min: float, max: float) -> FloatColumn:
-    return FloatColumn(
+def uniform(min: float, max: float) -> Distribution:
+    return Distribution(
         sample=lambda: (random.random() * max - min) + min,
         cdf=partial(uniform_cdf, min, max),
     )
 
 
-def standard_normal_float_column(mean: float, std_dev: float) -> FloatColumn:
+def standard_normal(mean: float, std_dev: float) -> Distribution:
     dist = norm(loc=mean, scale=std_dev)
-    return FloatColumn(sample=dist.rvs, cdf=dist.cdf)
+    return Distribution(sample=dist.rvs, cdf=dist.cdf)
 
 
 def uniform_cdf(min_val: float, max_val: float, point: float) -> float:
