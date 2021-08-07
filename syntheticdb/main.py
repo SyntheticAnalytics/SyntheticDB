@@ -1,13 +1,12 @@
 import pandas as pd
 from syntheticdb.db_core import Table, DataBase, FloatColumn
-from syntheticdb.distributions import uniform, standard_normal
-
+from syntheticdb.distributions import Uniform, Normal
 
 if __name__ == "__main__":
     user_table = Table(
         columns={
-            "age": FloatColumn(uniform(0, 100)),
-            "height": FloatColumn(standard_normal(5, 1)),
+            "age": FloatColumn(Uniform(0, 100)),
+            "height": FloatColumn(Normal(5, 1)),
         },
         row_count=1000,
     )
