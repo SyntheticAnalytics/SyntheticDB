@@ -17,22 +17,28 @@ In particular, each column is defined by its data type and distribution.
 When you use WHERE clauses in your queries SyntheticDB 
 samples from the corresponding conditional distributions.
 
-### Demo Notebook
-
-TODO
-// insert link to shared google compute notebook here // 
+Check out our [demo notebook](https://colab.research.google.com/drive/1mtF_VAENjdRqodGh9kSXj_AWeg4gJxnI?usp=sharing)
+to see SyntheticDB in action!
 
 ### Supported Features
 
-TODO
+- Build synthetic tables by specifying distributions for each column to follow
+- Use SQL to query your synthetic dataset just as you would query a real DB
+- Supported distributions: uniform, log-uniform, normal, log-normal, gamma, exponential, beta, weibull
 
 ### Limitations
 
-TODO
+- Currently the only supported data type is Float
+- SQL JOIN's are not yet supported
+- Specifying correlation between columns is not yet supported - i.e., all columns are pairwise independent random variables
 
-## What's Next?
+### What's Next?
 
-TODO
+In future releases we aim to:
+  - support additional data types and distributions
+  - support more complex SQL queries
+  - support specifying correlations between columns
+  - optimize query / sampling performance 
 
 ## About The Authors
 
