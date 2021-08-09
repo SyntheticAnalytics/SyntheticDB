@@ -1,7 +1,11 @@
 # SyntheticDB
 
+<img src="./logo/color.jpg" height="220"> <img src="./logo/logoSmall.jpg" height="220"> <img src="./logo/color.jpg" height="220">
+
 Simulate querying industry-scale ML datasets locally with real SQL statements
 without having to access, manage or pay for industry-scale infrastructure.
+
+We're on [Twitter](https://twitter.com/SynthAnalytics)!
 
 ## How Does It Work?
 
@@ -48,4 +52,6 @@ Sam got his BA in Mathematics.
 [Matt Garvin](https://github.com/mattgarvin1) is a Software Engineer at Coinbase, having previously worked in the 
 [Center For Translational Data Science](https://ctds.uchicago.edu/) at the University Of Chicago.
 Matt got his BA/MS in Mathematics.
+
+Send us a [message](mailto:contact.synthetic.analytics@gmail.com?subject=Hello%20SyntheticDB!), we'd love to talk!
 
