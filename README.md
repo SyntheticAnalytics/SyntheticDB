@@ -1,6 +1,6 @@
 # SyntheticDB
 
-<img src="./logo/color.jpg" height="220"> <img src="./logo/logoSmall.jpg" height="220"> <img src="./logo/color.jpg" height="220">
+<img src="./logo/color.jpg" height="180"> <img src="./logo/logoSmall.jpg" height="180"> <img src="./logo/color.jpg" height="180">
 
 Simulate querying industry-scale ML datasets locally with real SQL statements
 without having to access, manage or pay for industry-scale infrastructure.
