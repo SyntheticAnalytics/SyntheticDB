@@ -42,5 +42,10 @@ In future releases we aim to:
 
 ## About The Authors
 
-TODO
+[Sam Corzine](https://github.com/samcorzine) is an ML Engineer at Fetch Rewards with 5 years experience working in data-intensive cloud computing.
+Sam got his BA in Mathematics.
+
+[Matt Garvin](https://github.com/mattgarvin1) is a Software Engineer at Coinbase, having previously worked in the 
+[Center For Translational Data Science](https://ctds.uchicago.edu/) at the University Of Chicago.
+Matt got his BA/MS in Mathematics.
 
