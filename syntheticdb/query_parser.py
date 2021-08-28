@@ -24,27 +24,6 @@ class Query:
     where_clauses: List[WhereClause]
 
 
-# def parse_sql_to_query(raw: str) -> Query:
-#     parsed = sqlparse.parse(raw)[0]
-#     important_tokens = [token for token in parsed if token.is_whitespace is False]
-#     from_position = -1
-#     for i, token in enumerate(important_tokens):
-#         if token.normalized == "FROM":
-#             from_position = i
-#     table_name: str = important_tokens[from_position + 1].value
-#     table_name = table_name.strip("`")
-#     where_position = -1
-#     for i, token in enumerate(important_tokens):
-#         if token.normalized == "WHERE":
-#             where_position = i
-#
-#     return Query(
-#         table_name=table_name,
-#         columns=[""],
-#         where_clauses=[]
-#     )
-
-
 def query(
     columns: Union[List[str], str],
     table_name: str,
@@ -128,13 +107,6 @@ def parse_sql_to_query(raw: str) -> Query:
         return parse()
     parse, tokens = parse_where(parse, tokens)
     return parse()
-
-
-@dataclass
-class ParseResult:
-    success: bool
-    query_inputs: List[Token]
-    query_result: Optional[Query]
 
 
 if __name__ == "__main__":

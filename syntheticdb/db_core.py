@@ -14,10 +14,12 @@ def sample_until(callable: Callable[[], T], condition: Callable[[T], bool]) -> T
         if condition(out_val):
             return out_val
 
+
 @dataclass
 class Distribution:
     sample: Callable[[], float]
     cdf: Callable[[float], float]
+
 
 @dataclass(frozen=True)
 class FloatColumn:
@@ -38,7 +40,10 @@ class FloatColumn:
 
             return FloatColumn(
                 Distribution(
-                    sample=lambda: sample_until(self.distribution.sample, lambda x: condition.max > x > condition.min),
+                    sample=lambda: sample_until(
+                        self.distribution.sample,
+                        lambda x: condition.max > x > condition.min,
+                    ),
                     cdf=new_cdf,
                 )
             )
@@ -53,7 +58,9 @@ class FloatColumn:
 
             return FloatColumn(
                 Distribution(
-                    sample=lambda: sample_until(self.distribution.sample, lambda x: x > condition.min),
+                    sample=lambda: sample_until(
+                        self.distribution.sample, lambda x: x > condition.min
+                    ),
                     cdf=new_cdf,
                 )
             )
@@ -68,7 +75,9 @@ class FloatColumn:
 
             return FloatColumn(
                 Distribution(
-                    sample=lambda: sample_until(self.distribution.sample, lambda x: x < condition.max),
+                    sample=lambda: sample_until(
+                        self.distribution.sample, lambda x: x < condition.max
+                    ),
                     cdf=new_cdf,
                 )
             )
@@ -80,9 +89,23 @@ class FloatColumn:
         return self.distribution.cdf(1e10)
 
 
+class PrimaryKeyColumn:
+    def __init__(self):
+        pass
+
+
+@dataclass
+class ForeignKeyColumn:
+    foreign_table: str
+    foreign_column: str
+
+
+SupportedColumn = Union[FloatColumn, PrimaryKeyColumn, ForeignKeyColumn]
+
+
 @dataclass(frozen=True)
 class Table:
-    columns: Dict[str, Union[FloatColumn]]
+    columns: Dict[str, SupportedColumn]
     row_count: int
 
     def get_row_num(self) -> int:
@@ -101,7 +124,7 @@ class DataBase:
         result = self.select_from_query(query)
         return result
 
-    def select_from_query(self, query: Query) -> Dict[str, List[float]]:
+    def select_from_query(self, query: Query) -> pd.DataFrame:
         table_name = query.table_name
         where_clauses = query.where_clauses
         stripped_table_name = table_name.strip("`")
@@ -121,7 +144,9 @@ class DataBase:
         columns_to_return = {}
         if query.columns == "*":
             for name, col in view_table.columns.items():
-                columns_to_return[name] = [col.distribution.sample() for _ in range(new_row_count)]
+                columns_to_return[name] = [
+                    col.distribution.sample() for _ in range(new_row_count)
+                ]
         else:
             for name, col in view_table.columns.items():
                 if name in query.columns:
